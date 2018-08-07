@@ -5,9 +5,21 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 )
+
+// Error : Create the error logger
+var Error *log.Logger
+
+// Init : Initilize the logs
+func Init(
+	errorHandle io.Writer) {
+	Error = log.New(errorHandle, "ERROR: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 // Client : Struct to represent the clientg
 type Client struct {
@@ -26,11 +38,11 @@ func (c Client) generateKey() string {
 	return hex.EncodeToString(myBytes[:])
 }
 
-// function to take JSON file and Unmarshall to the Client Struct (returns bytes)
-func getJSON() Client {
-	raw, err := ioutil.ReadFile("./testFile.json")
+// GetJSON : function to take JSON file and Unmarshall to the Client Struct (returns bytes)
+func GetJSON(file string) Client {
+	raw, err := ioutil.ReadFile(file)
 	if err != nil {
-		fmt.Println(err.Error())
+		Error.Println("Unable to properly read file: ", err)
 		os.Exit(1)
 	}
 
@@ -40,8 +52,10 @@ func getJSON() Client {
 }
 
 func main() {
+	// for the error logg
+	Init(os.Stderr)
 
-	var testClient Client = getJSON()
+	var testClient = GetJSON("./testFile.json")
 	fmt.Printf("ClientId: %v\nClientSecret: %v\n", testClient.ClientId, testClient.ClientSecret)
 
 	var APIKey = testClient.generateKey()
