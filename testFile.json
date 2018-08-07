@@ -1,0 +1,9 @@
+{
+    "clientSecret": "4b45-beed-17fa839",
+    "redirectUrls": [
+        "https://www.google.com"
+    ],
+    "name": "its a name",
+    "clientId": "05de34eeeecd0ea8",
+    "description": "Company: google | Project Description: stuff"
+}
