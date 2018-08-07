@@ -43,7 +43,6 @@ func GetJSON(file string) Client {
 	raw, err := ioutil.ReadFile(file)
 	if err != nil {
 		Error.Println("Unable to properly read file: ", err)
-		os.Exit(1)
 	}
 
 	var c Client
@@ -51,13 +50,26 @@ func GetJSON(file string) Client {
 	return c
 }
 
+func validArgs(args []string) bool {
+	if len(args) > 0 && args[0] != "" {
+		return true
+	}
+	Error.Println("Invalid command line argument")
+	return false
+}
+
 func main() {
 	// for the error logg
 	Init(os.Stderr)
 
-	var testClient = GetJSON("./testFile.json")
-	fmt.Printf("ClientId: %v\nClientSecret: %v\n", testClient.ClientId, testClient.ClientSecret)
+	// normally args contains program name, this removes that
+	args := os.Args[1:]
 
-	var APIKey = testClient.generateKey()
-	fmt.Println(APIKey)
+	if validArgs(args) {
+		var testClient = GetJSON(args[0])
+		fmt.Printf("ClientId: %v\nClientSecret: %v\n", testClient.ClientId, testClient.ClientSecret)
+
+		var APIKey = testClient.generateKey()
+		fmt.Println(APIKey)
+	}
 }
